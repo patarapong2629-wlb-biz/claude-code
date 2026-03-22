@@ -1,6 +1,6 @@
 ---
 name: summarize-testing-ai-news
-description: Fetches and summarizes the latest software testing and AI-in-testing news from the past 7 days. Use when the user asks for recent news, updates, or trends in software testing, test automation, or AI applied to QA and testing.
+description: Fetches and summarizes the latest software testing and AI-in-testing news. Accepts an optional time range (e.g. "last 15 days", "last 30 days"); defaults to last 7 days if not specified. Use when the user asks for recent news, updates, or trends in software testing, test automation, or AI applied to QA and testing.
 ---
 
 # Software Testing & AI News Summarizer
@@ -40,7 +40,7 @@ Rules:
 
 ```
 Progress:
-- [ ] Step 1: Calculate date range (today minus 7 days)
+- [ ] Step 1: Determine date range from user input
 - [ ] Step 2: Fetch all sources
 - [ ] Step 3: Categorize and curate findings
 - [ ] Step 4: Generate structured summary report
@@ -48,7 +48,9 @@ Progress:
 
 ### Step 1: Determine date range
 
-Note today's date and compute the cutoff (today - 7 days). Skip any article older than the cutoff. If a date cannot be determined, include the article and flag as "date unknown".
+Check the user's request for a time range (e.g. "last 15 days", "last 30 days", "past week"). If none is specified, default to **7 days**.
+
+Note today's date and compute the cutoff (today - N days). Skip any article older than the cutoff. If a date cannot be determined, include the article and flag as "date unknown".
 
 ### Step 2: Fetch all sources
 
@@ -146,7 +148,7 @@ Use the table format defined at the top of this skill. Full template:
 | One-sentence summary. | Mar DD, YYYY |
 
 ---
-Sources fetched: [count] | Articles included: [count] | Period: last 7 days
+Sources fetched: [count] | Articles included: [count] | Period: last [N] days
 ```
 
 ## Notes
