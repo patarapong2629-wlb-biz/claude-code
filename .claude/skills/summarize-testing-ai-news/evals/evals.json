@@ -1,0 +1,47 @@
+{
+  "skill_name": "summarize-testing-ai-news",
+  "evals": [
+    {
+      "id": 1,
+      "name": "default-7-days",
+      "prompt": "Summarize the latest software testing news",
+      "expected_output": "A structured markdown report covering the last 7 days with a Highlights section, all 7 category sections formatted as 2-column tables (Summary | Date), and a footer line showing 'last 7 days'.",
+      "assertions": [
+        "The report header contains a date range in the format '[Month DD, YYYY] to [Month DD, YYYY]'",
+        "All 7 category headings are present: AI & LLM in Testing, Test Automation, Performance & Load Testing, Shift-Left & DevOps, Visual & Accessibility Testing, Tools & Releases, Industry News & Events",
+        "Each category section uses a markdown table with exactly 2 columns: Summary and Date",
+        "The footer line contains 'last 7 days'",
+        "All date values in tables use the format MMM DD, YYYY (e.g. Mar 22, 2026)",
+        "A Highlights section is present with at least 1 bullet point"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "custom-15-days",
+      "prompt": "Give me software testing and AI news from the last 15 days",
+      "expected_output": "A structured markdown report covering the last 15 days with a Highlights section, all 7 category sections formatted as 2-column tables (Summary | Date), and a footer line showing 'last 15 days'.",
+      "assertions": [
+        "The report header contains a date range in the format '[Month DD, YYYY] to [Month DD, YYYY]'",
+        "All 7 category headings are present: AI & LLM in Testing, Test Automation, Performance & Load Testing, Shift-Left & DevOps, Visual & Accessibility Testing, Tools & Releases, Industry News & Events",
+        "Each category section uses a markdown table with exactly 2 columns: Summary and Date",
+        "The footer line contains 'last 15 days'",
+        "All date values in tables use the format MMM DD, YYYY (e.g. Mar 22, 2026)",
+        "A Highlights section is present with at least 1 bullet point"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "casual-30-days",
+      "prompt": "what's new in testing tools and AI testing over the past 30 days?",
+      "expected_output": "A structured markdown report covering the last 30 days with a Highlights section, all 7 category sections formatted as 2-column tables (Summary | Date), and a footer line showing 'last 30 days'.",
+      "assertions": [
+        "The report header contains a date range in the format '[Month DD, YYYY] to [Month DD, YYYY]'",
+        "All 7 category headings are present: AI & LLM in Testing, Test Automation, Performance & Load Testing, Shift-Left & DevOps, Visual & Accessibility Testing, Tools & Releases, Industry News & Events",
+        "Each category section uses a markdown table with exactly 2 columns: Summary and Date",
+        "The footer line contains 'last 30 days'",
+        "All date values in tables use the format MMM DD, YYYY (e.g. Mar 22, 2026)",
+        "A Highlights section is present with at least 1 bullet point"
+      ]
+    }
+  ]
+}

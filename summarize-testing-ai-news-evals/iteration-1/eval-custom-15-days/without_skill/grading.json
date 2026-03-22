@@ -1,0 +1,43 @@
+{
+  "eval_id": 2,
+  "eval_name": "custom-15-days",
+  "configuration": "without_skill",
+  "assertion_results": [
+    {
+      "text": "The report header contains a date range in the format '[Month DD, YYYY] to [Month DD, YYYY]'",
+      "passed": false,
+      "evidence": "Header reads '# Software Testing & AI News: March 7-22, 2026' — uses colon separator and 'March 7-22' range format, not the required '[Month DD, YYYY] to [Month DD, YYYY]'"
+    },
+    {
+      "text": "All 7 category headings are present: AI & LLM in Testing, Test Automation, Performance & Load Testing, Shift-Left & DevOps, Visual & Accessibility Testing, Tools & Releases, Industry News & Events",
+      "passed": false,
+      "evidence": "Uses custom sections: 'The Big Story: Agentic AI Takes Over Testing', 'Sauce Labs: Solving the Problem AI Created', 'The Forbes Cracked AI Testing Claim', 'AI Guardrails Are Creating New Testing Headaches', 'Partnerships & Market Expansion', 'Security Testing Gets AI-Native', 'Tooling & Practical Developments', 'Broader AI & DevOps Context' — none match the 7 required headings"
+    },
+    {
+      "text": "Each category section uses a markdown table with exactly 2 columns: Summary and Date",
+      "passed": false,
+      "evidence": "No markdown tables present — output uses prose paragraphs with bold headers and bullet lists"
+    },
+    {
+      "text": "The footer line contains 'last 15 days'",
+      "passed": false,
+      "evidence": "No footer line present in the output"
+    },
+    {
+      "text": "All date values in tables use the format MMM DD, YYYY (e.g. Mar 22, 2026)",
+      "passed": false,
+      "evidence": "No tables present; dates appear inline in prose e.g. '(March 10, Business Wire)', '(March 17, DevOps.com)'"
+    },
+    {
+      "text": "A Highlights section is present with at least 1 bullet point",
+      "passed": false,
+      "evidence": "No '## Highlights' section present; closest is 'Quick Takeaways' numbered list at the end"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 6,
+    "total": 6,
+    "pass_rate": 0.0
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "iteration": 1,
+  "evals": [
+    {
+      "id": 1,
+      "name": "default-7-days",
+      "with_skill": { "pass_rate": 1.0, "time_seconds": 69.87, "tokens": 10455 },
+      "without_skill": { "pass_rate": 0.0, "time_seconds": 95.36, "tokens": 8960 }
+    },
+    {
+      "id": 2,
+      "name": "custom-15-days",
+      "with_skill": { "pass_rate": 1.0, "time_seconds": 70.68, "tokens": 12287 },
+      "without_skill": { "pass_rate": 0.0, "time_seconds": 176.20, "tokens": 18508 }
+    },
+    {
+      "id": 3,
+      "name": "casual-30-days",
+      "with_skill": { "pass_rate": 1.0, "time_seconds": 72.50, "tokens": 11250 },
+      "without_skill": { "pass_rate": 0.0, "time_seconds": 179.13, "tokens": 17540 }
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": { "mean": 1.0 },
+      "time_seconds": { "mean": 71.02 },
+      "tokens": { "mean": 11330 }
+    },
+    "without_skill": {
+      "pass_rate": { "mean": 0.0 },
+      "time_seconds": { "mean": 150.23 },
+      "tokens": { "mean": 15003 }
+    },
+    "delta": {
+      "pass_rate": 1.0,
+      "time_seconds": -79.21,
+      "tokens": -3673
+    }
+  },
+  "notes": "Negative delta for time and tokens means with_skill is faster and cheaper. The skill dramatically constrains output format, reducing agent deliberation time."
+}

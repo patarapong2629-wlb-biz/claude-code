@@ -1,0 +1,43 @@
+{
+  "eval_id": 1,
+  "eval_name": "default-7-days",
+  "configuration": "with_skill",
+  "assertion_results": [
+    {
+      "text": "The report header contains a date range in the format '[Month DD, YYYY] to [Month DD, YYYY]'",
+      "passed": true,
+      "evidence": "Header reads: '# Software Testing & AI News — Mar 15, 2026 to Mar 22, 2026'"
+    },
+    {
+      "text": "All 7 category headings are present: AI & LLM in Testing, Test Automation, Performance & Load Testing, Shift-Left & DevOps, Visual & Accessibility Testing, Tools & Releases, Industry News & Events",
+      "passed": true,
+      "evidence": "All 7 headings found: ## AI & LLM in Testing, ## Test Automation, ## Performance & Load Testing, ## Shift-Left & DevOps, ## Visual & Accessibility Testing, ## Tools & Releases, ## Industry News & Events"
+    },
+    {
+      "text": "Each category section uses a markdown table with exactly 2 columns: Summary and Date",
+      "passed": true,
+      "evidence": "All 7 categories use '| Summary | Date |' table headers with '|---|---|' separator rows"
+    },
+    {
+      "text": "The footer line contains 'last 7 days'",
+      "passed": true,
+      "evidence": "Footer reads: 'Sources fetched: 10 | Articles included: 17 | Period: last 7 days'"
+    },
+    {
+      "text": "All date values in tables use the format MMM DD, YYYY (e.g. Mar 22, 2026)",
+      "passed": true,
+      "evidence": "All table rows use format e.g. 'Mar 19, 2026', 'Mar 18, 2026', 'Mar 22, 2026'"
+    },
+    {
+      "text": "A Highlights section is present with at least 1 bullet point",
+      "passed": true,
+      "evidence": "## Highlights section present with 5 bullet points"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  }
+}
