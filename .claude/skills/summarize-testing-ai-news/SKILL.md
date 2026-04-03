@@ -54,7 +54,14 @@ Note today's date and compute the cutoff (today - N days). Skip any article olde
 
 ### Step 2: Fetch all sources
 
-Fetch each URL and extract article titles, dates, and descriptions.
+Use the `markitdown` CLI via Bash to fetch each source. This converts RSS/XML to clean markdown, dramatically reducing token usage compared to raw WebFetch.
+
+**Fetch command for each source:**
+```bash
+markitdown "<URL>"
+```
+
+Fetch these sources in parallel (run all in one message as independent Bash calls):
 
 | Source                         | URL                                                                                  |
 | ------------------------------ | ------------------------------------------------------------------------------------ |
@@ -68,6 +75,10 @@ Fetch each URL and extract article titles, dates, and descriptions.
 | Playwright Releases            | `https://github.com/microsoft/playwright/releases.atom`                              |
 | Cypress Blog                   | `https://www.cypress.io/blog/rss.xml`                                                |
 | ACM TOSEM                      | `https://dl.acm.org/action/showFeed?type=etoc&feed=rss&jc=tosem`                     |
+
+If `markitdown` is not installed, install it first: `pip install markitdown`
+
+If a source fails (network error or non-zero exit), skip it and note it in the footer.
 
 ### Step 3: Categorize and curate findings
 

@@ -1,0 +1,43 @@
+{
+  "eval_id": 1,
+  "eval_name": "default-7-days",
+  "configuration": "without_skill",
+  "assertion_results": [
+    {
+      "text": "The report header contains a date range in the format '[Month DD, YYYY] to [Month DD, YYYY]'",
+      "passed": false,
+      "evidence": "Header reads '# Latest Software Testing News Summary' with subtitle '**Date: March 28, 2026**' — no date range in the required format"
+    },
+    {
+      "text": "All 7 category headings are present: AI & LLM in Testing, Test Automation, Performance & Load Testing, Shift-Left & DevOps, Visual & Accessibility Testing, Tools & Releases, Industry News & Events",
+      "passed": false,
+      "evidence": "Uses custom sections: '1. AI and Agentic Testing Dominate the Industry', '2. New Product Releases', '3. Standards and Global Initiatives', '4. Financial Services and Enterprise Adoption', '5. Market and Industry Perspectives', '6. Key Themes to Watch' — none of the 7 required headings present"
+    },
+    {
+      "text": "Each category section uses a markdown table with exactly 2 columns: Summary and Date",
+      "passed": false,
+      "evidence": "Output uses prose paragraphs with bold headers. One table present under '6. Key Themes to Watch' uses 'Theme | Status' columns — not the required Summary | Date format, and not in required category sections"
+    },
+    {
+      "text": "The footer line contains 'last 7 days'",
+      "passed": false,
+      "evidence": "No footer line present. Output ends with a Sources section listing RSS feeds"
+    },
+    {
+      "text": "All date values in tables use the format MMM DD, YYYY (e.g. Mar 22, 2026)",
+      "passed": false,
+      "evidence": "No Summary/Date tables present; dates appear inline in prose e.g. '(March 18, 2026)', '(March 13, 2026)' — different format and context"
+    },
+    {
+      "text": "A Highlights section is present with at least 1 bullet point",
+      "passed": false,
+      "evidence": "No '## Highlights' section present in the output"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 6,
+    "total": 6,
+    "pass_rate": 0.0
+  }
+}

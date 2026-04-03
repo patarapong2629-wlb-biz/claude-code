@@ -1,0 +1,29 @@
+{
+  "iteration": "summarize-testing-ai-news-evals/iteration-2",
+  "eval_count": 3,
+  "overall_with_skill_pass_rate": 0.8333,
+  "overall_without_skill_pass_rate": 0.0556,
+  "results": [
+    {
+      "eval": "eval-1",
+      "with_skill_pass_rate": 0.8333,
+      "without_skill_pass_rate": 0.0,
+      "delta": 0.8333,
+      "flag_regression": false
+    },
+    {
+      "eval": "eval-2",
+      "with_skill_pass_rate": 0.8333,
+      "without_skill_pass_rate": 0.1667,
+      "delta": 0.6666,
+      "flag_regression": false
+    },
+    {
+      "eval": "eval-3",
+      "with_skill_pass_rate": 0.8333,
+      "without_skill_pass_rate": 0.0,
+      "delta": 0.8333,
+      "flag_regression": false
+    }
+  ]
+}
