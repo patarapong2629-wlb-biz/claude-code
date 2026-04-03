@@ -11,7 +11,11 @@
 
 ## When to Use
 
-Use a Decision Table when **2 or more conditions combine** to produce different outcomes. The inputs are typically outputs from BVA/EP analysis (valid/invalid partitions) or boolean flags.
+Use a Decision Table when **2 or more conditions combine** to produce different outcomes. The inputs are outputs from:
+- **BVA** — each boundary point value (min−1, min, min+1, ...)
+- **EP** — each partition representative value
+- **State Transition** — each transition expressed as `[initial state] + [event] → [final state]`
+- **Boolean** — True / False flags
 
 Total combinations = product of all partition counts per condition. For large tables, offer optimization.
 
@@ -32,7 +36,11 @@ Before designing, confirm:
 
 ### Step 1 — List Conditions and Values
 
-For each condition, list the possible values (from BVA/EP output or boolean True/False).
+For each condition, list all distinct values to be tested:
+- BVA condition → each boundary point value (min−1, min, min+1, max−1, max, max+1)
+- EP condition → each partition representative value
+- State Transition condition → each transition as `[initial state] + [event] → [final state]`
+- Boolean condition → True / False
 
 Example — Login with Email and Password:
 
@@ -71,12 +79,51 @@ Cover all 2-way combinations of conditions (not all N-way). Reduces test cases s
 Ask Claude to apply pairwise reduction after the full table is built. State which tool or algorithm to use (e.g., ACTS, AllPairs).
 
 ### Risk-Based Reduction
-Manually select combinations based on:
-- High-frequency paths (happy path + common errors)
-- High-risk/high-impact failures
-- Combinations flagged by business stakeholders
 
-Ask the user to mark which combinations are high risk before reducing.
+Gather risk signals by asking the user targeted questions, then **analyze and recommend** which combinations to keep.
+
+**Step 1 — Gather risk signals** ⏸
+
+Ask the user the following questions (all at once):
+
+> 1. **Historical defects** — Which conditions or combinations have caused bugs or incidents in the past?
+> 2. **Business impact** — Which outcomes are most critical if they fail? (e.g., financial loss, data loss, security breach, user-facing errors)
+> 3. **Usage frequency** — Which combinations occur most often in production?
+> 4. **Recent changes** — Which conditions were recently modified or are new?
+> 5. **Regulatory / compliance** — Are any combinations subject to compliance requirements that must always be tested?
+
+The user may answer some or all questions. Use whatever signals are provided.
+
+**Step 2 — Score each combination**
+
+For each combination, assign a risk score based on the answers:
+
+| Signal | Weight |
+|---|---|
+| Historical defect in this combination | High |
+| High business impact if this combination fails | High |
+| High usage frequency in production | Medium |
+| Recently changed condition involved | Medium |
+| Compliance requirement | High |
+| No signal / low impact / rarely used | Low |
+
+**Step 3 — Recommend combinations to keep** ⏸
+
+Present a recommended shortlist:
+- Keep all **High** risk combinations
+- Keep representative **Medium** risk combinations (at least one per condition value)
+- Drop **Low** risk combinations (or keep as optional)
+
+Show the recommendation with reasoning:
+
+| Combination | Risk Level | Reason | Keep? |
+|---|---|---|---|
+| Valid / Valid / Active | High | Happy path — most frequent in production | ✓ |
+| Valid / Valid / Locked | High | Historical defect: locked accounts bypassed auth | ✓ |
+| Invalid / Valid / Active | Medium | Common user error | ✓ |
+| Valid / Too long / Not found | Low | No signal, rare edge case | Optional |
+
+Ask the user: "รีวิว shortlist ด้านบนแล้วยืนยัน หรือปรับเพิ่ม/ลด combination ได้เลยครับ"
 
 ---
 

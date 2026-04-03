@@ -21,7 +21,7 @@ The CSV format is based on the project sample: `sample-data-in-csv-format.csv`.
 | `Priority` | Default to `Medium`; set `High` for critical paths | Optional |
 | `Component` | Leave blank unless specified | Optional |
 | `Platform` | `mobile` for this project | Optional |
-| `Automation Type` | `Automate-able` if the case can be scripted; blank otherwise | Optional |
+| `Automation Type` | Always `Automate-able` | Optional |
 
 ---
 
@@ -31,7 +31,7 @@ The CSV format is based on the project sample: `sample-data-in-csv-format.csv`.
 2. **Quoted fields** — any field containing commas, newlines, or quotes must be wrapped in double quotes.
 3. **Newlines in fields** — use actual line breaks within quoted strings for multi-step actions.
 4. **Encoding** — save as UTF-8.
-5. **Filename convention** — use `test-cases/<feature-name>-xray-import.csv`.
+5. **Filename convention** — use `test-design/<feature-name>-xray-import.csv`.
 
 ---
 
@@ -81,4 +81,4 @@ Before saving the CSV:
 - [ ] Multi-line Action fields are correctly quoted
 - [ ] No unescaped double quotes inside fields (use `""` to escape)
 - [ ] File saved as UTF-8
-- [ ] Filename follows the convention `test-cases/<feature-name>-xray-import.csv`
+- [ ] Filename follows the convention `test-design/<feature-name>-xray-import.csv`
