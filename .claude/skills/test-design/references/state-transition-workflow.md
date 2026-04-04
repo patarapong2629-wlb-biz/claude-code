@@ -12,9 +12,13 @@
 
 ## When to Use
 
-Use State Transition Testing when a system has distinct **states** and **events/triggers** that cause transitions between them — e.g., order status, account lifecycle, booking flow, approval workflow.
+State Transition can be used in two roles:
 
-Inputs from BVA/EP (valid/invalid values) can serve as events that cause transitions or block them.
+**As a leaf technique (single condition):**
+Use when a single business condition is itself a state lifecycle — the condition describes distinct states and events that drive transitions (e.g., order status, account lifecycle, booking flow). Design it directly using the workflow below.
+
+**As a combiner technique (group of conditions):**
+Use when multiple BVA/EP conditions together drive a state machine — the values from each sub-condition (boundary points or partitions) act as events or guards that determine which transitions are valid or invalid. Apply this after all sub-conditions in the group have been individually designed. The states and transitions are derived from the combined sub-condition outputs.
 
 ---
 
@@ -28,7 +32,13 @@ Before designing, confirm:
 5. **Invalid transitions** — what should happen when an invalid event is triggered in a given state? (ignore, error, exception?)
 6. **Re-entry** — can a state be re-entered? (e.g., can an order go from Shipped back to Processing?)
 7. **Optimization preference** — ask:
-   > "Would you like to optimize test coverage using **0-switch coverage** (each transition once), **1-switch coverage** (each pair of consecutive transitions), or test all valid + invalid transitions?"
+   > "Would you like to optimize test coverage using:
+   > 1. **All transitions** — cover every valid + invalid transition (maximum coverage)
+   > 2. **Each transition once** — test each transition individually with no chaining (minimum coverage)
+   > 3. **Pairwise** — cover all 2-way combinations of consecutive transition pairs
+   > 4. **Risk-based** — analyze risk signals and recommend which transitions to focus on
+   >
+   > Which do you prefer?"
 
 ---
 
@@ -68,50 +78,73 @@ List every **state × event** combination. Mark valid transitions with the resul
 
 ## Optimization Options
 
-### 0-Switch Coverage (Minimum)
-Cover each valid transition exactly once. N valid transitions = N test cases.
+### All Transitions (Maximum)
+Cover every cell in the state transition table — all valid transitions and all invalid events in each state.
+Use when reliability is critical (e.g., financial, medical systems).
+
+### Each Transition Once (Minimum)
+Test each transition individually with no chaining. One test case per valid transition + one per invalid event.
 Use when time is limited or the flow is simple.
 
-### 1-Switch Coverage (Recommended)
-Cover each pair of consecutive valid transitions (state1 → event → state2 → event → state3).
-Better at catching transition-dependent bugs. Requires more test cases.
+### Pairwise
+Cover all 2-way combinations of consecutive transition pairs (state1 → event → state2 → event → state3).
+Better at catching bugs that only appear when transitions happen in sequence. Reduces cases vs. all transitions while maintaining good coverage.
 
-### All Transitions (including invalid)
-Cover every cell in the state transition table, including invalid events in each state.
-Use when reliability is critical (e.g., financial, medical systems).
+### Risk-Based
+Gather risk signals by asking the user targeted questions, then **analyze and recommend** which transitions to focus on.
+
+**Step 1 — Gather risk signals** ⏸
+
+Ask the user the following questions (all at once):
+
+> 1. **Historical defects** — Which states or transitions have caused bugs or incidents in the past?
+> 2. **Business impact** — Which states are most critical if entered incorrectly or unexpectedly?
+> 3. **Usage frequency** — Which transitions happen most often in production?
+> 4. **Recent changes** — Which states or events were recently added or modified?
+> 5. **Regulatory / compliance** — Are any transitions subject to compliance requirements?
+
+**Step 2 — Score each transition**
+
+| Signal | Weight |
+|---|---|
+| Historical defect on this transition | High |
+| High business impact if this transition fails | High |
+| High usage frequency in production | Medium |
+| Recently changed state or event involved | Medium |
+| Compliance requirement | High |
+| No signal / low impact / rarely used | Low |
+
+**Step 3 — Recommend transitions to keep** ⏸
+
+Present a recommended shortlist with reasoning:
+
+| Transition | Risk Level | Reason | Keep? |
+|---|---|---|---|
+| Pending Payment + pay → Confirmed | High | Core payment flow — most frequent, financial impact | ✓ |
+| Cancelled + pay → Cancelled | High | Historical defect: payment retried on cancelled orders | ✓ |
+| New + submit → Pending Payment | Medium | Common entry point | ✓ |
+| Delivered + cancel → — (invalid) | Low | Terminal state, rare edge case | Optional |
+
+Ask the user: "รีวิว shortlist ด้านบนแล้วยืนยัน หรือปรับเพิ่ม/ลด transition ได้เลยครับ"
 
 ---
 
 ## Test Case Generation
 
-### Unit Test Cases (UT)
+### Combined UT + AT Table
 
-One test case per selected transition (valid) or per invalid event (for negative cases).
-
-| TC-ID | Test Case Name | Description | Initial State | Event / Action | Expected State | Expected Output | Type |
-|---|---|---|---|---|---|---|---|
-| UT-001 | Submit new order | Valid submission | New | submit | Pending Payment | Order moves to payment pending | Positive |
-| UT-002 | Pay for order | Valid payment | Pending Payment | pay | Confirmed | Order confirmed | Positive |
-| UT-003 | Cancel pending order | Cancel before payment | Pending Payment | cancel | Cancelled | Order cancelled | Positive |
-| UT-004 | Pay for cancelled order | Invalid event in Cancelled state | Cancelled | pay | Cancelled | Error / no change | Negative |
-
-### Acceptance Test Cases (AT)
-
-AT cases must be **exactly the same count as UT cases** — one AT per UT, in the same order.
-
-Each AT case covers the same transition as its corresponding UT but uses a realistic business scenario with production-like context (real actor, real object, real trigger).
+For State Transition, the transition values (Initial State, Event, Expected State) are identical between UT and AT — only the test name, description, and business context differ. Use a **single combined table** with a Business Context column instead of two separate tables.
 
 **Workflow:**
-1. After generating the UT table, analyze the requirement context and **propose** realistic AT scenarios yourself.
-2. Present the full proposed AT table.
-3. ⏸ Ask the user: "Please review the AT data above. Adjust any values or scenario descriptions if needed."
-4. Update based on user feedback.
+1. Generate the combined table with one row per selected transition, proposing realistic business context yourself.
+2. ⏸ Ask the user: "Please review the table above. Adjust any values or business context if needed."
+3. Update based on user feedback.
 
-Example:
+Label the table: **"Test Cases — [BC name] (UT + AT)"**
 
-| TC-ID | Test Case Name | Description | Initial State | Event / Action | Expected State | Expected Output | Type |
-|---|---|---|---|---|---|---|---|
-| AT-001 | Customer submits first order | Alice places a new order via mobile app | New | Customer taps "Place Order" | Pending Payment | Order confirmation screen shown, awaiting payment | Positive |
-| AT-002 | Customer pays via credit card | Alice completes payment with Visa card | Pending Payment | Customer completes payment | Confirmed | Email confirmation sent to alice@example.com | Positive |
-| AT-003 | Customer cancels before paying | Bob changes his mind before paying | Pending Payment | Customer taps "Cancel Order" | Cancelled | Order cancelled, no charge applied | Positive |
-| AT-004 | Attempt to pay cancelled order | System retries payment on cancelled order | Cancelled | Payment retry triggered | Cancelled | Error returned, no state change | Negative |
+| TC-ID | Test Case Name | Description | Initial State | Event / Action | Expected State | Expected Output | Business Context (AT) | Type |
+|---|---|---|---|---|---|---|---|---|
+| TC-001 | Submit new order | Valid transition: New → Pending Payment | New | submit | Pending Payment | Order moves to payment pending | Alice taps "Place Order" on mobile app | Positive |
+| TC-002 | Pay for order | Valid transition: Pending Payment → Confirmed | Pending Payment | pay | Confirmed | Order confirmed | Alice completes payment with Visa card | Positive |
+| TC-003 | Cancel pending order | Valid transition: Pending Payment → Cancelled | Pending Payment | cancel | Cancelled | Order cancelled | Bob changes his mind before paying | Positive |
+| TC-004 | Pay for cancelled order | Invalid event in Cancelled state | Cancelled | pay | Cancelled | Error / no change | System retries payment on cancelled order | Negative |

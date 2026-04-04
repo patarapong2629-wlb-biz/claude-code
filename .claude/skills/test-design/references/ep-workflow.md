@@ -59,27 +59,24 @@ Example — "User role determines access":
 | UT-004 | Unknown role | Role not in allowed list | superuser | Access denied | Negative |
 | UT-005 | Empty role | No role provided | (empty) | Access denied / error | Negative |
 
-### Acceptance Test Cases (AT)
+### Combined UT + AT Table
 
-AT cases must be **exactly the same count as UT cases** — one AT per UT, in the same order.
-
-For EP, the AT representative value for each partition may differ from the UT value to use more realistic business data (e.g., a real username instead of a raw role string).
+For EP, input values are identical between UT and AT — only the test name and business context differ. Use a **single combined table** with a Business Context column instead of two separate tables.
 
 **Workflow:**
-1. After generating the UT table, analyze the requirement context and **propose** realistic AT values yourself — one per partition.
-2. Present the full proposed AT table.
-3. ⏸ Ask the user: "Please review the AT data above. Adjust any values or scenario descriptions if needed."
-4. Update based on user feedback.
+1. Generate the combined table, proposing realistic business context yourself for each partition.
+2. ⏸ Ask the user: "Please review the table above. Adjust any values or business context if needed."
+3. Update based on user feedback.
 
-Example — "User role determines access":
+Label the table: **"Test Cases — [BC name] (UT + AT)"**
 
-| TC-ID | Test Case Name | Description | Role Input | Expected Result | Type |
-|---|---|---|---|---|---|
-| AT-001 | Admin manages content | Alice (admin) logs in to manage articles | admin | Full access granted | Positive |
-| AT-002 | Editor updates article | Bob (editor) logs in to edit a post | editor | Edit access granted | Positive |
-| AT-003 | Viewer reads content | Carol (viewer) logs in to browse | viewer | Read-only access | Positive |
-| AT-004 | Unauthorized role attempt | Dave uses a custom role not in the system | superuser | Access denied | Negative |
-| AT-005 | No role submitted | API call sent without a role field | (empty) | Access denied / error | Negative |
+| TC-ID | Test Case Name | Description | [Input col] | Expected Result | Business Context (AT) | Type |
+|---|---|---|---|---|---|---|
+| TC-001 | Admin role access | Valid admin partition | admin | Full access granted | Alice (admin) logs in to manage articles | Positive |
+| TC-002 | Editor role access | Valid editor partition | editor | Edit access granted | Bob (editor) logs in to edit a post | Positive |
+| TC-003 | Viewer role access | Valid viewer partition | viewer | Read-only access | Carol (viewer) logs in to browse | Positive |
+| TC-004 | Unknown role | Invalid — role not in allowed list | superuser | Access denied | Dave uses a custom role not in the system | Negative |
+| TC-005 | Empty role | Invalid — no role provided | (empty) | Access denied / error | API call sent without a role field | Negative |
 
 ---
 
