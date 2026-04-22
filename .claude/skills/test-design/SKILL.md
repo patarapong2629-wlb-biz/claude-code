@@ -195,6 +195,31 @@ Use the appropriate table format based on technique:
 
 ## Phase 4 — Combine Into Test Scenarios
 
+### Step 4.0: Build Test Data Catalog ⏸
+
+Before generating scenarios, propose a test data catalog. Use **one dedicated account per scenario** so test runs are isolated and repeatable.
+
+**Users:**
+
+| Account ID | Customer Type | Notes |
+|---|---|---|
+| [propose one account per unique scenario] | สมาชิก / ทั่วไป | e.g., สร้างใน test environment |
+
+**Items / Data (propose based on what the requirement references — products, amounts, dates, etc.):**
+
+| Name / ID | Type / Category | Key Value (price, amount, etc.) | Notes |
+|---|---|---|---|
+| [propose items matching the requirement's inputs] | [e.g., product category, transaction type] | [e.g., 150.00 บาท, qty 20] | [e.g., ต้องมีในระบบ test ก่อนรัน] |
+
+Present the proposed catalog and ask:
+> "นี่คือ test data ที่เสนอ — รีวิวหรือให้ข้อมูล test data จริงที่มีในระบบ test ได้เลยครับ"
+
+If the user provides their own data, use it. Otherwise use the proposed values and record them in Assumptions.
+
+Wait for confirmation before proceeding.
+
+---
+
 ### Step 4.1: Map the Flow
 
 After all groups are designed, combine them into an end-to-end flow. Present:
@@ -285,17 +310,51 @@ Apply the chosen strategy before generating the final scenario list.
 
 #### Step 4 — Generate final scenario list
 
-Order scenarios as follows — success scenarios first, then negative/alternative scenarios:
+Order scenarios: success first, then negative.
 1. **Success / happy path** — all BCs valid (sorted by varying BC values)
 2. **Negative / alternative** — any BC invalid (sorted by which BC fails first, then by invalid value)
 
+**Scenario naming rule:** A good name answers: **who** (account ID + actor type), **does what** (action + key input values from the BCs), **with what result** (outcome). Detail that belongs in other columns (product names, exact prices) should stay there — keep the name readable at a glance.
+
+Pattern: `[Actor + ID] [action + key BC values] — [outcome]`
+
+Examples across different domains:
+- e-commerce: `สมาชิกรหัส A001 ซื้อนิทาน 5 เล่ม ในวันเปิดตัวโปรโมชัน — ฟรีค่าจัดส่ง`
+- login/auth: `ผู้ใช้รหัส U002 กรอกรหัสผ่านผิด 3 ครั้งติดต่อกัน — บัญชีถูกล็อก`
+- form validation: `ผู้สมัครรหัส R005 กรอกอายุ 17 ปี (ต่ำกว่าเกณฑ์) — ไม่สามารถสมัครได้`
+
+Bad: `สมาชิกซื้อนิทานครบ` (no account ID, no key values, no outcome)
+
+**Products column:** List each product with name and quantity explicitly. Calculate the subtotal per line.
+
+Good: `นิทาน "กระต่ายกับเต่า" 5 เล่ม × 150.00 = 750.00 บาท`
+
+Bad: `นิทาน A×5`
+
+**Expected Result must include ALL observable values** for the checkout/order summary screen. At minimum:
+- ค่าสินค้ารวม (total item price = sum of all line totals)
+- ค่าจัดส่ง
+- ยอดรวมทั้งหมด (grand total = ค่าสินค้ารวม + ค่าจัดส่ง)
+
+If unit prices are not provided, ask for them in Step 4.0.
+
+**BC Coverage column:** List every business condition exercised in natural-language labels — one per line. Use the same phrasing as the BCs so it is immediately readable, not just a BC code.
+
+Good example (readable):
+```
+ลูกค้าเป็นสมาชิก
+ซื้อสินค้าเท่ากับวันเปิดโปรโมชัน
+ซื้อหนังสือนิทานเท่ากับ 5 เล่ม
+ตะกร้ามีเฉพาะหนังสือนิทาน
+```
+
+Bad example: `สมาชิก, BC-01, ≥5 เล่ม, BC-03`
+
 Use the format:
 
-| TS-ID | Scenario Name | Pre-condition | Steps | Expected Result |
-|---|---|---|---|---|
-| TS-001 | [success scenario] | ... | 1. ...<br>2. ... | ... |
-| ... | ... | ... | ... | ... |
-| TS-00N | [negative scenario] | ... | 1. ...<br>2. ... | ... |
+| TS-ID | Scenario Name | Account | Products / Inputs | Pre-condition | Steps | Expected Result | BC Coverage |
+|---|---|---|---|---|---|---|---|
+| TS-001 | [Actor + ID] [action + key BC values] — [outcome] | [account ID] ([actor type]) | [item/input name] [qty] × [unit price] = [subtotal]<br>(one line per item) | [date / state / setup] | 1. [setup step]<br>2. [action step]<br>3. [verify step] | [field 1] = [value]<br>[field 2] = [value]<br>[total] = [value] | [BC label 1]<br>[BC label 2]<br>[BC label 3] |
 
 After listing all scenarios, add a summary line:
 > "Total: N scenarios (X success, Y negative)"
